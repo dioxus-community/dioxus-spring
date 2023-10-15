@@ -14,7 +14,7 @@ where
     V: Lerp<Scalar = f32> + fmt::Debug + Clone + 'static,
 {
     let (tx, rx) = cx.use_hook(async_channel::unbounded);
-    to_owned![tx, rx];
+    to_owned![ tx, rx ];
 
     use_future(cx, (), move |_| async move {
         let mut current = from;
