@@ -40,8 +40,12 @@ impl<V> UseSpringStyle<V> {
         self.element_ref.set(Some(data));
     }
 
-    pub fn transition_to(&self, to: V, duration: Duration) {
-        self.spring_ref.transition_to(to, duration);
+    pub fn set(&self, to: V) {
+        self.spring_ref.set(to)
+    }
+
+    pub fn animate(&self, to: V, duration: Duration) {
+        self.spring_ref.animate(to, duration);
     }
 }
 

@@ -1,7 +1,6 @@
 use crate::spring;
-
 use dioxus::prelude::*;
-use futures::{pin_mut, StreamExt};
+use futures::StreamExt;
 use interpolation::Lerp;
 use std::{task::Poll, time::Duration};
 
@@ -20,9 +19,15 @@ where
     let mut cell = None;
     use_future(cx, (), move |_| {
         futures::future::poll_fn(move |cx| {
-            if let Poll::Ready(Some((to, duration))) = rx.poll_next_unpin(cx) {
-                let spring = spring(current.clone(), to, duration);
-                cell = Some(Box::pin(spring));
+            if let Poll::Ready(Some((to, duration_cell))) = rx.poll_next_unpin(cx) {
+                if let Some(duration) = duration_cell {
+                    let spring = spring(current.clone(), to, duration);
+                    cell = Some(Box::pin(spring));
+                } else {
+                    current = to.clone();
+                    f(to);
+                }
+                
             }
 
             if let Some(spring) = cell.as_mut() {
@@ -50,11 +55,15 @@ where
 
 #[derive(Clone)]
 pub struct UseSpringRef<V> {
-    tx: async_channel::Sender<(V, Duration)>,
+    tx: async_channel::Sender<(V, Option<Duration>)>,
 }
 
 impl<V> UseSpringRef<V> {
-    pub fn transition_to(&self, to: V, duration: Duration) {
-        self.tx.send_blocking((to, duration)).unwrap();
+    pub fn set(&self, to: V) {
+        self.tx.send_blocking((to, None)).unwrap();
+    }
+
+    pub fn animate(&self, to: V, duration: Duration) {
+        self.tx.send_blocking((to, Some(duration))).unwrap();
     }
 }
