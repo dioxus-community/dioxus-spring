@@ -12,18 +12,18 @@ fn app(cx: Scope) -> Element {
                 spring_ref.mount(event.data);
             },
             onmouseenter: move |_| {
-                spring_ref.start(100., Duration::from_secs(1));
+                spring_ref.transition_to(100., Duration::from_secs(1));
             },
             onmouseleave: move |_| {
-                spring_ref.start(50., Duration::from_secs(1));
+                spring_ref.transition_to(50., Duration::from_secs(1));
             },
-            "Click me!"
+            "Hover me!"
         }
     )
 }
 
 fn main() {
     dioxus_logger::init(LevelFilter::Info).expect("failed to init logger");
-    
+
     dioxus_web::launch(app)
 }

@@ -60,7 +60,7 @@ impl<V> UseSpringStyle<V> {
         self.element_ref.set(Some(data));
     }
 
-    pub fn start(&self, to: V, duration: Duration) {
-        self.spring_ref.start(to, duration);
+    pub fn transition_to(&self, to: V, duration: Duration) {
+        self.spring_ref.transition_to(to, duration);
     }
 }
