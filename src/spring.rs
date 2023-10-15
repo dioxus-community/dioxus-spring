@@ -10,21 +10,26 @@ where
 {
     let start = Date::now();
 
-    stream::unfold((), move |()| {
+    stream::unfold(false, move |is_done| {
         let from = from.clone();
         let to = to.clone();
         async move {
+            if is_done {
+                return None;
+            }
+
             request_animation_frame().await;
 
             let dt = Date::now() - start;
             let duration_ms = duration.as_secs_f64() * 1000.;
             if dt >= duration_ms {
-                return None;
+                let v = interpolation::lerp(&from, &to, &1.);
+                return Some((v, true));
             }
 
             let x = dt / duration_ms;
             let v = interpolation::lerp(&from, &to, &(x as f32));
-            Some((v, ()))
+            Some((v, false))
         }
     })
 }
