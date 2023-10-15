@@ -1,3 +1,4 @@
+use controller::request_animation_frame;
 use dioxus::prelude::*;
 use futures::StreamExt;
 use futures_channel::mpsc;
@@ -5,6 +6,8 @@ use interpolation::Lerp;
 use js_sys::Date;
 use std::{fmt, rc::Rc, time::Duration};
 use wasm_bindgen::{prelude::Closure, JsCast};
+
+mod controller;
 
 pub fn use_spring<T, V>(
     cx: Scope<T>,
@@ -39,15 +42,7 @@ where
                 raw_elem.set_attribute("style", &make_style(v)).unwrap();
             }
 
-            let (tx, mut rx) = mpsc::unbounded();
-            let f: Closure<dyn FnMut()> = Closure::new(move || {
-                tx.unbounded_send(()).unwrap();
-            });
-            web_sys::window()
-                .unwrap()
-                .request_animation_frame(f.as_ref().unchecked_ref())
-                .unwrap();
-            rx.next().await;
+            request_animation_frame().await;
         }
     });
 

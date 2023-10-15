@@ -284,6 +284,7 @@ dependencies = [
 name = "dioxus-spring"
 version = "0.1.0"
 dependencies = [
+ "async-channel",
  "dioxus",
  "dioxus-web",
  "futures",
