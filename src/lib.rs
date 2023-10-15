@@ -24,7 +24,7 @@ pub fn use_spring<T, V>(
 ) where
     V: Lerp<Scalar = f32> + Clone + 'static,
 {
-    cx.spawn(async move {
+    use_future(cx, (), move |_| async move {
         let spring = spring(from, to, duration);
         pin_mut!(spring);
 
