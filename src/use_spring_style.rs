@@ -49,6 +49,15 @@ impl<V> UseSpringStyle<V> {
     }
 }
 
+impl<V> Clone for UseSpringStyle<V> {
+    fn clone(&self) -> Self {
+        Self {
+            element_ref: self.element_ref.clone(),
+            spring_ref: self.spring_ref.clone(),
+        }
+    }
+}
+
 fn set_style(element_ref: &UseRef<Option<Rc<MountedData>>>, style: &str) {
     if let Some(element) = &*element_ref.read() {
         let raw_elem = element

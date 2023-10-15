@@ -27,7 +27,6 @@ where
                     current = to.clone();
                     f(to);
                 }
-                
             }
 
             if let Some(spring) = cell.as_mut() {
@@ -53,7 +52,6 @@ where
     cx.bump().alloc(UseSpringRef { tx })
 }
 
-#[derive(Clone)]
 pub struct UseSpringRef<V> {
     tx: async_channel::Sender<(V, Option<Duration>)>,
 }
@@ -65,5 +63,13 @@ impl<V> UseSpringRef<V> {
 
     pub fn animate(&self, to: V, duration: Duration) {
         self.tx.send_blocking((to, Some(duration))).unwrap();
+    }
+}
+
+impl<V> Clone for UseSpringRef<V> {
+    fn clone(&self) -> Self {
+        Self {
+            tx: self.tx.clone(),
+        }
     }
 }

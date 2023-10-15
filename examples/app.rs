@@ -10,15 +10,9 @@ fn app(cx: Scope) -> Element {
 
     render!(
         h1 {
-            onmounted: move |event| {
-                spring_ref.mount(event.data);
-            },
-            onmouseenter: move |_| {
-                spring_ref.animate(2., Duration::from_secs(1));
-            },
-            onmouseleave: move |_| {
-                spring_ref.animate(1., Duration::from_secs(1));
-            },
+            onmounted: move |event| spring_ref.mount(event.data),
+            onmouseenter: move |_| spring_ref.animate(2., Duration::from_secs(1)),
+            onmouseleave: move |_| spring_ref.animate(1., Duration::from_secs(1)),
             "Hover me!"
         }
     )
