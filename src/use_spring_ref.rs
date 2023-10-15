@@ -19,12 +19,13 @@ where
     let mut cell = None;
     use_future(cx, (), move |_| {
         futures::future::poll_fn(move |cx| {
-            if let Poll::Ready(Some((to, duration_cell))) = rx.poll_next_unpin(cx) {
+            while let Poll::Ready(Some((to, duration_cell))) = rx.poll_next_unpin(cx) {
                 if let Some(duration) = duration_cell {
                     let spring = spring(current.clone(), to, duration);
                     cell = Some(Box::pin(spring));
                 } else {
                     current = to.clone();
+                    cell = None;
                     f(to);
                 }
             }
