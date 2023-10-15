@@ -5,18 +5,15 @@ use std::{rc::Rc, time::Duration};
 
 pub fn use_spring_style<T, V>(
     cx: Scope<T>,
-    from: V,
-    to: V,
-    duration: Duration,
     mut make_style: impl FnMut(V) -> String + 'static,
-) -> &UseSpringStyle
+) -> &UseSpringStyle<V>
 where
     V: Lerp<Scalar = f32> + Clone + 'static,
 {
     let element_ref: UseRef<Option<Rc<MountedData>>> = use_ref(cx, || None).clone();
 
     let element_ref_clone = element_ref.clone();
-    let spring_ref = use_spring_ref(cx, from, to, duration, move |val| {
+    let spring_ref = use_spring_ref(cx, move |val| {
         if let Some(element) = &*element_ref_clone.read() {
             let raw_elem = element
                 .get_raw_element()
@@ -34,17 +31,17 @@ where
     })
 }
 
-pub struct UseSpringStyle {
+pub struct UseSpringStyle<V> {
     element_ref: UseRef<Option<Rc<MountedData>>>,
-    spring_ref: UseSpringRef,
+    spring_ref: UseSpringRef<V>,
 }
 
-impl UseSpringStyle {
+impl<V> UseSpringStyle<V> {
     pub fn mount(&self, data: Rc<MountedData>) {
         self.element_ref.set(Some(data));
     }
 
-    pub fn start(&self) {
-        self.spring_ref.start();
+    pub fn start(&self, from: V, to: V, duration: Duration) {
+        self.spring_ref.start(from, to, duration);
     }
 }

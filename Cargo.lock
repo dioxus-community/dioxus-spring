@@ -288,7 +288,6 @@ dependencies = [
  "dioxus",
  "dioxus-web",
  "futures",
- "futures-channel",
  "interpolation",
  "js-sys",
  "wasm-bindgen",
