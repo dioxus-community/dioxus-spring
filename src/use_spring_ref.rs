@@ -1,5 +1,5 @@
 use crate::spring;
-use core::fmt;
+
 use dioxus::prelude::*;
 use futures::{pin_mut, StreamExt};
 use interpolation::Lerp;
@@ -11,7 +11,7 @@ pub fn use_spring_ref<T, V>(
     mut f: impl FnMut(V) + 'static,
 ) -> &UseSpringRef<V>
 where
-    V: Lerp<Scalar = f32> + fmt::Debug + Clone + 'static,
+    V: Lerp<Scalar = f32> + Clone + 'static,
 {
     let (tx, rx) = cx.use_hook(async_channel::unbounded);
     to_owned![tx, rx];
