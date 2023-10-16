@@ -4,7 +4,7 @@
     <img src="https://img.shields.io/crates/v/dioxus-spring?style=flat-square"
     alt="Crates.io version" />
   </a>
-  <a href="https://docs.rs/dioxus-spring/latest/dioxus-spring">
+  <a href="https://docs.rs/dioxus-spring/latest/dioxus_spring/">
     <img src="https://img.shields.io/badge/docs-latest-blue.svg?style=flat-square"
       alt="docs.rs docs" />
   </a>
@@ -20,6 +20,12 @@
 
 <br>
 
+Animation library for [Dioxus](https://dioxuslabs.com).
+
+Pairs great with [dioxus-use-gesture](https://github.com/matthunz/dioxus-use-gesture)!
+
+
+
 ```rust
 let spring_ref = use_spring_style(cx, 1f32, |scale| {
     format!("transform-origin: top left; transform: scale({scale});")
@@ -27,15 +33,9 @@ let spring_ref = use_spring_style(cx, 1f32, |scale| {
 
 render!(
     h1 {
-        onmounted: move |event| {
-            spring_ref.mount(event.data);
-        },
-        onmouseenter: move |_| {
-            spring_ref.transition_to(2., Duration::from_secs(1));
-        },
-        onmouseleave: move |_| {
-            spring_ref.transition_to(1., Duration::from_secs(1));
-        },
+        onmounted: move |event| spring_ref.mount(event.data),
+        onmouseenter: move |_| spring_ref.animate(2., Duration::from_secs(1)),
+        onmouseleave: move |_| spring_ref.animate(1., Duration::from_secs(1)),
         "Hover me!"
     }
 )
