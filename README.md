@@ -4,7 +4,7 @@
     <img src="https://img.shields.io/crates/v/dioxus-spring?style=flat-square"
     alt="Crates.io version" />
   </a>
-  <a href="https://docs.rs/dioxus-spring/latest/dioxus-spring">
+  <a href="https://docs.rs/dioxus-spring/latest/dioxus_spring/">
     <img src="https://img.shields.io/badge/docs-latest-blue.svg?style=flat-square"
       alt="docs.rs docs" />
   </a>
