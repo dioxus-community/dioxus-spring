@@ -4,15 +4,14 @@ use dioxus_signals::{use_signal, Signal};
 use interpolation::Lerp;
 use std::time::Duration;
 
-pub fn use_spring_signal<T, V>(
-    cx: Scope<T>,
-    from: V,
-    f: impl FnMut(V) + 'static,
-) -> UseSpringSignal<V>
+pub fn use_spring_signal<T, V>(cx: Scope<T>, from: V) -> (UseSpringSignal<V>, Signal<V>)
 where
     V: PartialEq + Lerp<Scalar = f32> + Clone + 'static,
 {
-    let spring_ref = use_spring_ref(cx, from, f);
+    let from_clone = from.clone();
+    let output = use_signal(cx, move || from_clone);
+
+    let spring_ref = use_spring_ref(cx, from, move |value| output.set(value));
     to_owned![spring_ref];
 
     let signal: Signal<Option<(V, Option<Duration>)>> = use_signal(cx, || None);
@@ -27,7 +26,7 @@ where
         }
     });
 
-    UseSpringSignal { signal }
+    (UseSpringSignal { signal }, output)
 }
 
 pub struct UseSpringSignal<V: 'static> {

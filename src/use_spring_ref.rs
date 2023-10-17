@@ -13,7 +13,7 @@ where
     V: Lerp<Scalar = f32> + Clone + 'static,
 {
     let (tx, rx) = cx.use_hook(async_channel::unbounded);
-    to_owned![tx, rx];
+    to_owned![ tx, rx ];
 
     let mut current = from;
     let mut cell = None;
