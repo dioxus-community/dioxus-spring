@@ -1,16 +1,16 @@
 use std::rc::Rc;
-
 use dioxus::prelude::{MountedData, Scope};
 use dioxus_signals::Signal;
 use interpolation::Lerp;
 
+/// Mount an animated value to an element's style attribute.
 pub fn use_animated<T, V>(
     cx: Scope<T>,
     element_ref: Signal<Option<Rc<MountedData>>>,
     value_ref: Signal<V>,
     mut make_style: impl FnMut(V) -> String + 'static,
 ) where
-    V: PartialEq + Lerp<Scalar = f32> + Clone + 'static,
+    V: Lerp<Scalar = f32> + PartialEq + Clone + 'static,
 {
     dioxus_signals::use_effect(cx, move || {
         let value = value_ref.read();

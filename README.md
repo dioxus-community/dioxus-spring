@@ -24,8 +24,6 @@ Animation library for [Dioxus](https://dioxuslabs.com).
 
 Pairs great with [dioxus-use-gesture](https://github.com/matthunz/dioxus-use-gesture)!
 
-
-
 ```rust
 let is_big = use_state(cx, || false);
 let spring = use_spring(cx, if **is_big { 2f32 } else { 1f32 });
