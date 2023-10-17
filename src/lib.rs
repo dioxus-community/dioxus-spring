@@ -9,13 +9,19 @@ pub use controller::request_animation_frame;
 mod spring;
 pub use spring::spring;
 
+mod use_animated;
+pub use use_animated::use_animated;
+
+mod use_spring;
+pub use use_spring::use_spring;
+
+mod use_spring_signal;
+pub use use_spring_signal::use_spring_signal;
+
 mod use_spring_ref;
 pub use use_spring_ref::{use_spring_ref, UseSpringRef};
 
-mod use_spring_style;
-pub use use_spring_style::{use_spring_style, UseSpringStyle};
-
-pub fn use_spring<T, V>(
+pub fn use_on_spring<T, V>(
     cx: Scope<T>,
     from: V,
     to: V,
