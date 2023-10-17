@@ -27,16 +27,19 @@ Pairs great with [dioxus-use-gesture](https://github.com/matthunz/dioxus-use-ges
 
 
 ```rust
-let spring_ref = use_spring_style(cx, 1f32, |scale| {
-    format!("transform-origin: top left; transform: scale({scale});")
+let is_big = use_state(cx, || false);
+let spring = use_spring(cx, if **is_big { 2f32 } else { 1f32 });
+
+let element_ref = use_signal(cx, || None);
+use_animated(cx, element_ref, spring, |scale| {
+    format!("transform-origin: top left; transform: scale({scale})")
 });
 
 render!(
-    h1 {
-        onmounted: move |event| spring_ref.mount(event.data),
-        onmouseenter: move |_| spring_ref.animate(2., Duration::from_secs(1)),
-        onmouseleave: move |_| spring_ref.animate(1., Duration::from_secs(1)),
-        "Hover me!"
+    div {
+        onmounted: move |event| element_ref.set(Some(event.data)),
+        onclick: move |_| is_big.set(!is_big),
+        "Click me!"
     }
 )
 ```

@@ -4,8 +4,8 @@ use dioxus_spring::{use_animated, use_spring};
 use log::LevelFilter;
 
 fn app(cx: Scope) -> Element {
-    let is_open = use_state(cx, || false);
-    let spring = use_spring(cx, if **is_open { 2f32 } else { 1f32 });
+    let is_big = use_state(cx, || false);
+    let spring = use_spring(cx, if **is_big { 2f32 } else { 1f32 });
 
     let element_ref = use_signal(cx, || None);
     use_animated(cx, element_ref, spring, |scale| {
@@ -17,7 +17,7 @@ fn app(cx: Scope) -> Element {
     render!(
         div {
             onmounted: move |event| element_ref.set(Some(event.data)),
-            onclick: move |_| is_open.set(!is_open),
+            onclick: move |_| is_big.set(!is_big),
             "Click me!"
         }
     )
