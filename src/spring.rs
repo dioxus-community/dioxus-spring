@@ -8,9 +8,13 @@ pub fn spring<V>(from: V, to: V, duration: Duration) -> impl Stream<Item = V>
 where
     V: Lerp<Scalar = f32> + Clone + 'static,
 {
-    let start = Date::now();
-
+    let mut start_cell = None;
     stream::unfold(false, move |is_done| {
+        if start_cell.is_none() {
+            start_cell = Some(Date::now());
+        }
+        let start = start_cell.unwrap();
+
         let from = from.clone();
         let to = to.clone();
         async move {

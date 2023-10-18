@@ -1,5 +1,4 @@
-use std::rc::Rc;
-use dioxus::prelude::{MountedData, Scope};
+use dioxus::prelude::Scope;
 use dioxus_signals::Signal;
 use dioxus_use_mounted::UseMounted;
 
@@ -9,7 +8,7 @@ pub fn use_animated<T, V>(
     value_ref: Signal<V>,
     mut make_style: impl FnMut(V) -> String + 'static,
 ) where
-    V: Clone
+    V: Clone,
 {
     dioxus_signals::use_effect(cx, move || {
         let value = value_ref.read();

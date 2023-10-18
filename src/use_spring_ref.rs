@@ -2,7 +2,7 @@ use crate::spring;
 use dioxus::prelude::*;
 use futures::StreamExt;
 use interpolation::Lerp;
-use std::{task::Poll, time::Duration};
+use std::{collections::VecDeque, task::Poll, time::Duration};
 
 pub fn use_spring_ref<T, V>(
     cx: Scope<T>,
@@ -13,24 +13,43 @@ where
     V: Lerp<Scalar = f32> + Clone + 'static,
 {
     let (tx, rx) = cx.use_hook(async_channel::unbounded);
-    to_owned![ tx, rx ];
+    to_owned![tx, rx];
 
     let mut current = from;
-    let mut cell = None;
+    let mut spring_cell = None;
+    let mut stack = VecDeque::new();
     use_future(cx, (), move |_| {
         futures::future::poll_fn(move |cx| {
-            while let Poll::Ready(Some((to, duration_cell))) = rx.poll_next_unpin(cx) {
-                if let Some(duration) = duration_cell {
-                    let spring = spring(current.clone(), to, duration);
-                    cell = Some(Box::pin(spring));
-                } else {
-                    current = to.clone();
-                    cell = None;
-                    f(to);
+            while let Poll::Ready(Some(msg)) = rx.poll_next_unpin(cx) {
+                match msg {
+                    Message::Set(to, duration_cell) => {
+                        if let Some(duration) = duration_cell {
+                            let spring = spring(current.clone(), to, duration);
+                            spring_cell = Some(Box::pin(spring));
+                            stack.clear();
+                        } else {
+                            current = to.clone();
+                            spring_cell.take();
+                            stack.clear();
+                            f(to);
+                        }
+                    }
+                    Message::Queue(to, duration) => {
+                        stack.push_back((to, duration));
+                    }
                 }
             }
 
-            if let Some(spring) = cell.as_mut() {
+            if spring_cell.is_none() {
+                if let Some((to, duration)) = stack.pop_front() {
+                    let spring = crate::spring(current.clone(), to, duration);
+                    spring_cell = Some(Box::pin(spring));
+                } else {
+                    spring_cell = None;
+                }
+            }
+
+            while let Some(spring) = spring_cell.as_mut() {
                 let mut is_done = false;
                 while let Poll::Ready(item) = spring.poll_next_unpin(cx) {
                     if let Some(val) = item {
@@ -41,8 +60,16 @@ where
                         break;
                     }
                 }
+
                 if is_done {
-                    cell = None;
+                    if let Some((to, duration)) = stack.pop_front() {
+                        let spring = crate::spring(current.clone(), to, duration);
+                        spring_cell = Some(Box::pin(spring));
+                    } else {
+                        spring_cell = None;
+                    }
+                } else {
+                    break;
                 }
             }
 
@@ -53,17 +80,28 @@ where
     cx.bump().alloc(UseSpringRef { tx })
 }
 
+pub(crate) enum Message<V> {
+    Set(V, Option<Duration>),
+    Queue(V, Duration),
+}
+
 pub struct UseSpringRef<V> {
-    tx: async_channel::Sender<(V, Option<Duration>)>,
+    tx: async_channel::Sender<Message<V>>,
 }
 
 impl<V> UseSpringRef<V> {
     pub fn set(&self, to: V) {
-        self.tx.send_blocking((to, None)).unwrap();
+        self.tx.send_blocking(Message::Set(to, None)).unwrap();
     }
 
     pub fn animate(&self, to: V, duration: Duration) {
-        self.tx.send_blocking((to, Some(duration))).unwrap();
+        self.tx
+            .send_blocking(Message::Set(to, Some(duration)))
+            .unwrap();
+    }
+
+    pub fn queue(&self, to: V, duration: Duration) {
+        self.tx.send_blocking(Message::Queue(to, duration)).unwrap();
     }
 }
 
