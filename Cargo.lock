@@ -303,6 +303,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "dioxus-resize-observer"
+version = "0.1.0"
+dependencies = [
+ "dioxus",
+ "dioxus-signals",
+ "dioxus-use-mounted",
+ "dioxus-web",
+ "js-sys",
+ "wasm-bindgen",
+ "web-sys",
+]
+
+[[package]]
 name = "dioxus-rsx"
 version = "0.4.2"
 source = "git+https://github.com/ealmloff/dioxus?branch=fix-signals-outside-of-runtime#ce86aabf262d53cbf8cbf0a5cbb74630725b8970"
@@ -331,7 +344,9 @@ dependencies = [
  "async-channel",
  "dioxus",
  "dioxus-logger",
+ "dioxus-resize-observer",
  "dioxus-signals",
+ "dioxus-use-mounted",
  "dioxus-web",
  "futures",
  "interpolation",
@@ -339,6 +354,16 @@ dependencies = [
  "log",
  "wasm-bindgen",
  "web-sys",
+]
+
+[[package]]
+name = "dioxus-use-mounted"
+version = "0.1.0"
+source = "git+https://github.com/matthunz/dioxus-use-mounted#2ef9d54ebfe6766b74ab69867e5ade5d5faa209a"
+dependencies = [
+ "dioxus",
+ "dioxus-signals",
+ "dioxus-web",
 ]
 
 [[package]]

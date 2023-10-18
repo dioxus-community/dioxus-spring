@@ -1,14 +1,14 @@
 use dioxus::prelude::*;
-use dioxus_signals::use_signal;
 use dioxus_spring::{use_animated, use_spring};
+use dioxus_use_mounted::use_mounted;
 use log::LevelFilter;
 
 fn app(cx: Scope) -> Element {
     let is_big = use_state(cx, || false);
     let spring = use_spring(cx, if **is_big { 2f32 } else { 1f32 });
 
-    let element_ref = use_signal(cx, || None);
-    use_animated(cx, element_ref, spring, |scale| {
+    let mounted = use_mounted(cx);
+    use_animated(cx, mounted, spring, |scale| {
         format!("transform-origin: top left; transform: scale({scale})")
     });
 
@@ -16,7 +16,7 @@ fn app(cx: Scope) -> Element {
 
     render!(
         div {
-            onmounted: move |event| element_ref.set(Some(event.data)),
+            onmounted: move |event| mounted.onmounted(event),
             onclick: move |_| is_big.set(!is_big),
             "Click me!"
         }

@@ -1,25 +1,24 @@
 use std::rc::Rc;
-
 use dioxus::prelude::{MountedData, Scope};
 use dioxus_signals::Signal;
-use interpolation::Lerp;
+use dioxus_use_mounted::UseMounted;
 
 pub fn use_animated<T, V>(
     cx: Scope<T>,
-    element_ref: Signal<Option<Rc<MountedData>>>,
+    mounted: UseMounted,
     value_ref: Signal<V>,
     mut make_style: impl FnMut(V) -> String + 'static,
 ) where
-    V: PartialEq + Lerp<Scalar = f32> + Clone + 'static,
+    V: Clone
 {
     dioxus_signals::use_effect(cx, move || {
         let value = value_ref.read();
-        set_style(element_ref, &make_style(value.clone()));
+        set_style(mounted, &make_style(value.clone()));
     })
 }
 
-fn set_style(element_ref: Signal<Option<Rc<MountedData>>>, style: &str) {
-    if let Some(element) = &*element_ref.read() {
+fn set_style(mounted: UseMounted, style: &str) {
+    if let Some(element) = &*mounted.signal.read() {
         let raw_elem = element
             .get_raw_element()
             .unwrap()
