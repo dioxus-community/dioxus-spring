@@ -3,24 +3,31 @@ use dioxus_resize_observer::use_size;
 use dioxus_spring::{use_animated, use_spring};
 use dioxus_use_mounted::use_mounted;
 use log::LevelFilter;
+use std::time::Duration;
 
 fn app(cx: Scope) -> Element {
     let container_ref = use_mounted(cx);
     let (width, _) = use_size(cx, container_ref);
 
     let is_big = use_state(cx, || false);
-    let spring = use_spring(cx, if **is_big { width as f32 } else { 0f32 });
+    let spring = use_spring(
+        cx,
+        if **is_big { width as f32 } else { 0f32 },
+        Duration::from_millis(500),
+    );
 
     let animated_ref = use_mounted(cx);
     use_animated(cx, animated_ref, spring, |width| {
-        format!(r"
+        format!(
+            r"
             width: {width}px;
             height: 100%;
             position: absolute;
             top: 0;
             left: 0;
             background: #27ae60;
-        ")
+        "
+        )
     });
 
     log::info!("render!");

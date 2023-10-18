@@ -28,16 +28,20 @@ Pairs great with [dioxus-use-gesture](https://github.com/matthunz/dioxus-use-ges
 
 ```rust
 let is_big = use_state(cx, || false);
-let spring = use_spring(cx, if **is_big { 2f32 } else { 1f32 });
+let spring = use_spring(
+    cx,
+    if **is_big { 2f32 } else { 1f32 },
+    Duration::from_millis(500),
+);
 
-let element_ref = use_signal(cx, || None);
-use_animated(cx, element_ref, spring, |scale| {
+let mounted = use_mounted(cx);
+use_animated(cx, mounted, spring, |scale| {
     format!("transform-origin: top left; transform: scale({scale})")
 });
 
 render!(
     div {
-        onmounted: move |event| element_ref.set(Some(event.data)),
+        onmounted: move |event| mounted.onmounted(event),
         onclick: move |_| is_big.set(!is_big),
         "Click me!"
     }
