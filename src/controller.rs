@@ -54,7 +54,6 @@ impl Future for RequestFuture {
                         let f: Closure<dyn FnMut()> = Closure::new(move || {
                             CONTROL
                                 .try_with(|cell| {
-                                    log::info!("WAT");
                                     let mut maybe_controller = cell.borrow_mut();
                                     let controller = maybe_controller.as_mut().unwrap();
 
