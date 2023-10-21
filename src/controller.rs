@@ -1,62 +1,82 @@
 use dioxus::prelude::RefCell;
-use futures::StreamExt;
-use std::rc::Rc;
+use futures::{Future, StreamExt};
+use slotmap::{DefaultKey, SlotMap};
+use std::{
+    pin::Pin,
+    rc::Rc,
+    task::{Context, Poll, Waker},
+};
 use wasm_bindgen::{prelude::Closure, JsCast};
 
-struct Controller {
-    tx: async_channel::Sender<()>,
-    rx: async_channel::Receiver<()>,
+pub async fn request_animation_frame() {
+    RequestFuture { key: None }.await
+}
+
+#[derive(Default)]
+struct Control {
+    wakers: SlotMap<DefaultKey, Waker>,
     pending: Option<Rc<Closure<dyn FnMut()>>>,
 }
 
 thread_local! {
-    static CONTROLLER: RefCell<Option<Controller>> = RefCell::new(None);
+    static CONTROL: RefCell<Option<Control>> = RefCell::new(None);
 }
 
-pub async fn request_animation_frame() {
-    let (request_cell, mut rx) = CONTROLLER
-        .try_with(|cell| {
-            let mut cx = cell.borrow_mut();
-            let controller = if let Some(controller) = &mut *cx {
-                controller
-            } else {
-                let (tx, rx) = async_channel::unbounded();
-                *cx = Some(Controller {
-                    tx,
-                    rx,
-                    pending: None,
-                });
-                cx.as_mut().unwrap()
-            };
+struct RequestFuture {
+    key: Option<DefaultKey>,
+}
 
-            let request_cell = if controller.pending.is_none() {
-                let tx = controller.tx.clone();
-                let f: Closure<dyn FnMut()> = Closure::new(move || {
-                    tx.send_blocking(()).unwrap();
+impl Future for RequestFuture {
+    type Output = ();
 
-                    CONTROLLER
-                        .try_with(|cell| {
-                            let mut cx = cell.borrow_mut();
-                            cx.as_mut().unwrap().pending.take();
-                        })
-                        .unwrap();
-                });
+    fn poll(mut self: Pin<&mut Self>, cx: &mut Context) -> Poll<Self::Output> {
+        CONTROL
+            .try_with(|cell| {
+                if let Some(key) = self.key {
+                    let maybe_controller = cell.borrow();
+                    let controller = maybe_controller.as_ref().unwrap();
+                    if controller.wakers.get(key).is_none() {
+                        Poll::Ready(())
+                    } else {
+                        Poll::Pending
+                    }
+                } else {
+                    let mut maybe_controller = cell.borrow_mut();
+                    if maybe_controller.is_none() {
+                        *maybe_controller = Some(Control::default());
+                    }
+                    let controller = maybe_controller.as_mut().unwrap();
 
-                controller.pending = Some(Rc::new(f));
-                controller.pending.clone()
-            } else {
-                None
-            };
-            (request_cell, controller.rx.clone())
-        })
-        .unwrap();
+                    let key = controller.wakers.insert(cx.waker().clone());
+                    self.key = Some(key);
 
-    if let Some(f) = request_cell {
-        web_sys::window()
+                    if controller.pending.is_none() {
+                        let f: Closure<dyn FnMut()> = Closure::new(move || {
+                            CONTROL
+                                .try_with(|cell| {
+                                    log::info!("WAT");
+                                    let mut maybe_controller = cell.borrow_mut();
+                                    let controller = maybe_controller.as_mut().unwrap();
+
+                                    for waker in controller.wakers.values() {
+                                        waker.wake_by_ref();
+                                    }
+                                    controller.wakers.clear();
+                                    controller.pending.take();
+                                })
+                                .unwrap();
+                        });
+
+                        web_sys::window()
+                            .unwrap()
+                            .request_animation_frame(f.as_ref().as_ref().unchecked_ref())
+                            .unwrap();
+                        controller.pending = Some(Rc::new(f));
+                    }
+
+                    Poll::Pending
+                }
+            })
             .unwrap()
-            .request_animation_frame(f.as_ref().as_ref().unchecked_ref())
-            .unwrap();
     }
-
-    rx.next().await;
 }
