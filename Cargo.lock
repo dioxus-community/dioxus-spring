@@ -35,9 +35,9 @@ dependencies = [
 
 [[package]]
 name = "async-task"
-version = "4.4.1"
+version = "4.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b9441c6b2fe128a7c2bf680a44c34d0df31ce09e5b7e401fcca3faa483dbc921"
+checksum = "b4eb2cdb97421e01129ccb49169d8279ed21e829929144f4a22a6e54ac549ca1"
 
 [[package]]
 name = "async-trait"
@@ -190,7 +190,7 @@ dependencies = [
 [[package]]
 name = "dioxus"
 version = "0.4.2"
-source = "git+https://github.com/ealmloff/dioxus?branch=fix-signals-outside-of-runtime#ce86aabf262d53cbf8cbf0a5cbb74630725b8970"
+source = "git+https://github.com/dioxuslabs/dioxus#cea9563e259e51f45de40d8ac1078024aef29be6"
 dependencies = [
  "dioxus-core",
  "dioxus-core-macro",
@@ -203,7 +203,7 @@ dependencies = [
 [[package]]
 name = "dioxus-core"
 version = "0.4.2"
-source = "git+https://github.com/ealmloff/dioxus?branch=fix-signals-outside-of-runtime#ce86aabf262d53cbf8cbf0a5cbb74630725b8970"
+source = "git+https://github.com/dioxuslabs/dioxus#cea9563e259e51f45de40d8ac1078024aef29be6"
 dependencies = [
  "bumpalo",
  "futures-channel",
@@ -219,11 +219,12 @@ dependencies = [
 [[package]]
 name = "dioxus-core-macro"
 version = "0.4.2"
-source = "git+https://github.com/ealmloff/dioxus?branch=fix-signals-outside-of-runtime#ce86aabf262d53cbf8cbf0a5cbb74630725b8970"
+source = "git+https://github.com/dioxuslabs/dioxus#cea9563e259e51f45de40d8ac1078024aef29be6"
 dependencies = [
  "constcat",
  "dioxus-core",
  "dioxus-rsx",
+ "prettyplease",
  "proc-macro2",
  "quote",
  "syn",
@@ -238,7 +239,7 @@ checksum = "2ea539174bb236e0e7dc9c12b19b88eae3cb574dedbd0252a2d43ea7e6de13e2"
 [[package]]
 name = "dioxus-hooks"
 version = "0.4.2"
-source = "git+https://github.com/ealmloff/dioxus?branch=fix-signals-outside-of-runtime#ce86aabf262d53cbf8cbf0a5cbb74630725b8970"
+source = "git+https://github.com/dioxuslabs/dioxus#cea9563e259e51f45de40d8ac1078024aef29be6"
 dependencies = [
  "dioxus-core",
  "dioxus-debug-cell",
@@ -251,7 +252,7 @@ dependencies = [
 [[package]]
 name = "dioxus-hot-reload"
 version = "0.4.2"
-source = "git+https://github.com/ealmloff/dioxus?branch=fix-signals-outside-of-runtime#ce86aabf262d53cbf8cbf0a5cbb74630725b8970"
+source = "git+https://github.com/dioxuslabs/dioxus#cea9563e259e51f45de40d8ac1078024aef29be6"
 dependencies = [
  "dioxus-core",
  "dioxus-html",
@@ -264,7 +265,7 @@ dependencies = [
 [[package]]
 name = "dioxus-html"
 version = "0.4.2"
-source = "git+https://github.com/ealmloff/dioxus?branch=fix-signals-outside-of-runtime#ce86aabf262d53cbf8cbf0a5cbb74630725b8970"
+source = "git+https://github.com/dioxuslabs/dioxus#cea9563e259e51f45de40d8ac1078024aef29be6"
 dependencies = [
  "async-channel",
  "async-trait",
@@ -283,7 +284,7 @@ dependencies = [
 [[package]]
 name = "dioxus-interpreter-js"
 version = "0.4.2"
-source = "git+https://github.com/ealmloff/dioxus?branch=fix-signals-outside-of-runtime#ce86aabf262d53cbf8cbf0a5cbb74630725b8970"
+source = "git+https://github.com/dioxuslabs/dioxus#cea9563e259e51f45de40d8ac1078024aef29be6"
 dependencies = [
  "js-sys",
  "sledgehammer_bindgen",
@@ -305,7 +306,7 @@ dependencies = [
 [[package]]
 name = "dioxus-resize-observer"
 version = "0.1.0"
-source = "git+https://github.com/dioxus-community/dioxus-resize-observer#ad92eec9e93a5d2e682bc4887a8c785859a31dde"
+source = "git+https://github.com/dioxus-community/dioxus-resize-observer#481585f6100075996782910b8a91e34c77573370"
 dependencies = [
  "dioxus",
  "dioxus-signals",
@@ -319,7 +320,7 @@ dependencies = [
 [[package]]
 name = "dioxus-rsx"
 version = "0.4.2"
-source = "git+https://github.com/ealmloff/dioxus?branch=fix-signals-outside-of-runtime#ce86aabf262d53cbf8cbf0a5cbb74630725b8970"
+source = "git+https://github.com/dioxuslabs/dioxus#cea9563e259e51f45de40d8ac1078024aef29be6"
 dependencies = [
  "dioxus-core",
  "proc-macro2",
@@ -330,7 +331,7 @@ dependencies = [
 [[package]]
 name = "dioxus-signals"
 version = "0.0.0"
-source = "git+https://github.com/ealmloff/dioxus?branch=fix-signals-outside-of-runtime#ce86aabf262d53cbf8cbf0a5cbb74630725b8970"
+source = "git+https://github.com/dioxuslabs/dioxus#cea9563e259e51f45de40d8ac1078024aef29be6"
 dependencies = [
  "dioxus-core",
  "generational-box",
@@ -361,7 +362,7 @@ dependencies = [
 [[package]]
 name = "dioxus-use-mounted"
 version = "0.1.0"
-source = "git+https://github.com/matthunz/dioxus-use-mounted#2ef9d54ebfe6766b74ab69867e5ade5d5faa209a"
+source = "git+https://github.com/matthunz/dioxus-use-mounted#7f27c94bb6b2e63f175aeab06b671c0940e4bd15"
 dependencies = [
  "dioxus",
  "dioxus-signals",
@@ -371,7 +372,7 @@ dependencies = [
 [[package]]
 name = "dioxus-web"
 version = "0.4.2"
-source = "git+https://github.com/ealmloff/dioxus?branch=fix-signals-outside-of-runtime#ce86aabf262d53cbf8cbf0a5cbb74630725b8970"
+source = "git+https://github.com/dioxuslabs/dioxus#cea9563e259e51f45de40d8ac1078024aef29be6"
 dependencies = [
  "async-channel",
  "async-trait",
@@ -553,7 +554,7 @@ dependencies = [
 [[package]]
 name = "generational-box"
 version = "0.0.0"
-source = "git+https://github.com/ealmloff/dioxus?branch=fix-signals-outside-of-runtime#ce86aabf262d53cbf8cbf0a5cbb74630725b8970"
+source = "git+https://github.com/dioxuslabs/dioxus#cea9563e259e51f45de40d8ac1078024aef29be6"
 dependencies = [
  "bumpalo",
 ]
@@ -679,9 +680,9 @@ checksum = "da2479e8c062e40bf0066ffa0bc823de0a9368974af99c9f6df941d2c231e03f"
 
 [[package]]
 name = "lock_api"
-version = "0.4.10"
+version = "0.4.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c1cc9717a20b1bb222f333e6a92fd32f7d8a18ddc5a3191a11af45dcbf4dcd16"
+checksum = "3c168f8615b12bc01f9c17e2eb0cc07dcae1940121185446edc3744920e8ef45"
 dependencies = [
  "autocfg",
  "scopeguard",
@@ -777,6 +778,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "439ee305def115ba05938db6eb1644ff94165c5ab5e9420d1c1bcedbba909391"
 
 [[package]]
+name = "prettyplease"
+version = "0.2.15"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ae005bd773ab59b4725093fd7df83fd7892f7d8eafb48dbd7de6e024e4215f9d"
+dependencies = [
+ "proc-macro2",
+ "syn",
+]
+
+[[package]]
 name = "proc-macro2"
 version = "1.0.69"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -811,9 +822,9 @@ dependencies = [
 
 [[package]]
 name = "rustix"
-version = "0.38.19"
+version = "0.38.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "745ecfa778e66b2b63c88a61cb36e0eea109e803b0b86bf9879fbc77c70e86ed"
+checksum = "67ce50cb2e16c2903e30d1cbccfd8387a74b9d4c938b6a4c5ec6cc7556f7a8a0"
 dependencies = [
  "bitflags",
  "errno",
@@ -982,18 +993,18 @@ dependencies = [
 
 [[package]]
 name = "thiserror"
-version = "1.0.49"
+version = "1.0.50"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1177e8c6d7ede7afde3585fd2513e611227efd6481bd78d2e82ba1ce16557ed4"
+checksum = "f9a7210f5c9a7156bb50aa36aed4c95afb51df0df00713949448cf9e97d382d2"
 dependencies = [
  "thiserror-impl",
 ]
 
 [[package]]
 name = "thiserror-impl"
-version = "1.0.49"
+version = "1.0.50"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "10712f02019e9288794769fba95cd6847df9874d49d871d062172f9dd41bc4cc"
+checksum = "266b2e40bc00e5a6c09c3584011e08b06f123c00362c92b975ba9843aaaa14b8"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1039,9 +1050,9 @@ checksum = "c7c4ceeeca15c8384bbc3e011dbd8fccb7f068a440b752b7d9b32ceb0ca0e2e8"
 
 [[package]]
 name = "tracing"
-version = "0.1.39"
+version = "0.1.40"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ee2ef2af84856a50c1d430afce2fdded0a4ec7eda868db86409b4543df0797f9"
+checksum = "c3523ab5a71916ccf420eebdf5521fcef02141234bbc0b8a49f2fdc4544364ef"
 dependencies = [
  "pin-project-lite",
  "tracing-attributes",

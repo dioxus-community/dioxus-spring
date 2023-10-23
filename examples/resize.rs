@@ -7,12 +7,12 @@ use std::time::Duration;
 
 fn app(cx: Scope) -> Element {
     let container_ref = use_mounted(cx);
-    let (width, _) = use_size(cx, container_ref);
+    let rect = use_size(cx, container_ref);
 
     let is_big = use_state(cx, || false);
     let spring = use_spring(
         cx,
-        if **is_big { width as f32 } else { 0f32 },
+        if **is_big { rect.width() as f32 } else { 0f32 },
         Duration::from_millis(500),
     );
 
@@ -45,7 +45,7 @@ fn app(cx: Scope) -> Element {
                 position: "absolute",
                 top: "50%",
                 left: "50%",
-                transform:" translate(-50%, -50%)",
+                transform: " translate(-50%, -50%)",
                 z_index: 9,
                 "Click me!"
             }
