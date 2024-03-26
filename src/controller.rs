@@ -1,7 +1,7 @@
-use dioxus::prelude::RefCell;
-use futures::{Future, StreamExt};
+use futures::Future;
 use slotmap::{DefaultKey, SlotMap};
 use std::{
+    cell::RefCell,
     pin::Pin,
     rc::Rc,
     task::{Context, Poll, Waker},

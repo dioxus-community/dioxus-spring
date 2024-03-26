@@ -5,19 +5,18 @@ use dioxus_use_mounted::use_mounted;
 use log::LevelFilter;
 use std::time::Duration;
 
-fn app(cx: Scope) -> Element {
-    let container_ref = use_mounted(cx);
-    let rect = use_size(cx, container_ref);
+fn app() -> Element {
+    let container_ref = use_mounted();
+    let rect = use_size(container_ref);
 
-    let is_big = use_state(cx, || false);
+    let mut is_big = use_signal(|| false);
     let spring = use_spring(
-        cx,
-        if **is_big { rect.width() as f32 } else { 0f32 },
+        if is_big() { rect.width() as f32 } else { 0f32 },
         Duration::from_millis(500),
     );
 
-    let animated_ref = use_mounted(cx);
-    use_animated(cx, animated_ref, spring, |width| {
+    let animated_ref = use_mounted();
+    use_animated(animated_ref, spring, |width| {
         format!(
             r"
             width: {width}px;
@@ -32,14 +31,14 @@ fn app(cx: Scope) -> Element {
 
     log::info!("render!");
 
-    render!(
+    rsx!(
         div {
             position: "relative",
             width: "200px",
             height: "50px",
             border: "2px solid #eee",
             onmounted: move |event| container_ref.onmounted(event),
-            onclick: move |_| is_big.set(!is_big),
+            onclick: move |_| is_big.set(!is_big()),
             div { onmounted: move |event| animated_ref.onmounted(event) }
             span {
                 position: "absolute",
@@ -56,5 +55,5 @@ fn app(cx: Scope) -> Element {
 fn main() {
     dioxus_logger::init(LevelFilter::Info).expect("failed to init logger");
 
-    dioxus_web::launch(app)
+    dioxus_web::launch::launch_cfg(app, Default::default())
 }

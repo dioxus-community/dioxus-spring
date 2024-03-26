@@ -1,5 +1,4 @@
 use std::time::Duration;
-
 use dioxus::prelude::*;
 use dioxus_spring::{use_animated, use_spring};
 use dioxus_use_mounted::use_mounted;

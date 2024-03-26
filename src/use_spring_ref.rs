@@ -4,23 +4,21 @@ use futures::StreamExt;
 use interpolation::Lerp;
 use std::{collections::VecDeque, task::Poll, time::Duration};
 
-pub fn use_spring_ref<T, V>(
-    cx: Scope<T>,
-    from: V,
-    mut f: impl FnMut(V) + 'static,
-) -> &UseSpringRef<V>
+pub fn use_spring_ref<V>(from: V, f: impl FnMut(V) + 'static) -> UseSpringRef<V>
 where
     V: Lerp<Scalar = f32> + Clone + 'static,
 {
-    let (tx, rx) = cx.use_hook(async_channel::unbounded);
-    to_owned![tx, rx];
+    let mut channel = use_signal(async_channel::unbounded);
 
-    let mut current = from;
-    let mut spring_cell = None;
-    let mut stack = VecDeque::new();
-    use_future(cx, (), move |_| {
+    let mut f_cell = Some(f);
+    use_future(move || {
+        let mut f = f_cell.take().unwrap();
+        let mut current = from.clone();
+        let mut spring_cell = None;
+        let mut stack = VecDeque::new();
+
         futures::future::poll_fn(move |cx| {
-            while let Poll::Ready(Some(msg)) = rx.poll_next_unpin(cx) {
+            while let Poll::Ready(Some(msg)) = channel.write().1.poll_next_unpin(cx) {
                 match msg {
                     Message::Set(to, duration_cell) => {
                         if let Some(duration) = duration_cell {
@@ -77,7 +75,7 @@ where
         })
     });
 
-    cx.bump().alloc(UseSpringRef { tx })
+    UseSpringRef { channel }
 }
 
 pub(crate) enum Message<V> {
@@ -85,30 +83,43 @@ pub(crate) enum Message<V> {
     Queue(V, Duration),
 }
 
-pub struct UseSpringRef<V> {
-    tx: async_channel::Sender<Message<V>>,
+pub struct UseSpringRef<V: 'static> {
+    channel: Signal<(
+        async_channel::Sender<Message<V>>,
+        async_channel::Receiver<Message<V>>,
+    )>,
 }
 
 impl<V> UseSpringRef<V> {
     pub fn set(&self, to: V) {
-        self.tx.send_blocking(Message::Set(to, None)).unwrap();
+        self.channel
+            .read()
+            .0
+            .send_blocking(Message::Set(to, None))
+            .unwrap();
     }
 
     pub fn animate(&self, to: V, duration: Duration) {
-        self.tx
+        self.channel
+            .read()
+            .0
             .send_blocking(Message::Set(to, Some(duration)))
             .unwrap();
     }
 
     pub fn queue(&self, to: V, duration: Duration) {
-        self.tx.send_blocking(Message::Queue(to, duration)).unwrap();
+        self.channel
+            .read()
+            .0
+            .send_blocking(Message::Queue(to, duration))
+            .unwrap();
     }
 }
 
 impl<V> Clone for UseSpringRef<V> {
     fn clone(&self) -> Self {
-        Self {
-            tx: self.tx.clone(),
-        }
+        *self
     }
 }
+
+impl<V> Copy for UseSpringRef<V> {}

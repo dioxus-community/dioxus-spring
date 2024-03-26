@@ -1,22 +1,21 @@
 use crate::use_spring_ref::{use_spring_ref, Message};
 use dioxus::prelude::*;
-use dioxus_signals::{use_signal, Signal};
 use interpolation::Lerp;
 use std::time::Duration;
 
-pub fn use_spring_signal<T, V>(cx: Scope<T>, from: V) -> (UseSpringSignal<V>, Signal<V>)
+pub fn use_spring_signal<V>(from: V) -> (UseSpringSignal<V>, Signal<V>)
 where
     V: PartialEq + Lerp<Scalar = f32> + Clone + 'static,
 {
     let from_clone = from.clone();
-    let output = use_signal(cx, move || from_clone);
+    let mut output = use_signal(move || from_clone);
 
-    let spring_ref = use_spring_ref(cx, from, move |value| output.set(value));
+    let spring_ref = use_spring_ref(from, move |value| output.set(value));
     to_owned![spring_ref];
 
-    let signal: Signal<Option<Message<V>>> = use_signal(cx, || None);
+    let signal: Signal<Option<Message<V>>> = use_signal(|| None);
 
-    dioxus_signals::use_effect(cx, move || {
+    use_effect(move || {
         if let Some(msg) = &*signal.read() {
             match msg {
                 Message::Set(to, duration_cell) => {
@@ -39,15 +38,15 @@ pub struct UseSpringSignal<V: 'static> {
 }
 
 impl<V> UseSpringSignal<V> {
-    pub fn set(&self, to: V) {
+    pub fn set(&mut self, to: V) {
         self.signal.set(Some(Message::Set(to, None)))
     }
 
-    pub fn animate(&self, to: V, duration: Duration) {
+    pub fn animate(&mut self, to: V, duration: Duration) {
         self.signal.set(Some(Message::Set(to, Some(duration))))
     }
 
-    pub fn queue(&self, to: V, duration: Duration) {
+    pub fn queue(&mut self, to: V, duration: Duration) {
         self.signal.set(Some(Message::Queue(to, duration)))
     }
 }
