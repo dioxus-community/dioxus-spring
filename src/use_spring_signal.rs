@@ -13,19 +13,19 @@ where
     let spring_ref = use_spring_ref(from, move |value| output.set(value));
     to_owned![spring_ref];
 
-    let signal: Signal<Option<Message<V>>> = use_signal(|| None);
+    let mut signal: Signal<Option<Message<V>>> = use_signal(|| None);
 
     use_effect(move || {
-        if let Some(msg) = &*signal.read() {
+        if let Some(msg) = signal.write().take() {
             match msg {
                 Message::Set(to, duration_cell) => {
                     if let Some(duration) = duration_cell {
-                        spring_ref.animate(to.clone(), *duration);
+                        spring_ref.animate(to.clone(), duration);
                     } else {
                         spring_ref.set(to.clone());
                     }
                 }
-                Message::Queue(to, duration) => spring_ref.queue(to.clone(), *duration),
+                Message::Queue(to, duration) => spring_ref.queue(to.clone(), duration),
             }
         }
     });
