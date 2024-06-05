@@ -16,7 +16,7 @@ mod use_spring;
 pub use use_spring::use_spring;
 
 mod use_spring_signal;
-pub use use_spring_signal::{use_spring_signal, UseSpringSignal};
+pub use use_spring_signal::use_spring_signal;
 
 mod use_spring_ref;
 pub use use_spring_ref::{use_spring_ref, UseSpringRef};
