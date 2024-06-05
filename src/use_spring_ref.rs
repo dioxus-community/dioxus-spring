@@ -4,6 +4,10 @@ use futures::StreamExt;
 use interpolation::Lerp;
 use std::{collections::VecDeque, task::Poll, time::Duration};
 
+/// Hook to animate a value from some initial value `from`.
+/// 
+/// The returned [`UseSpringRef`] can be used to queue and control animations.
+/// Values are linearly interpolated and sent to the handler `f`.
 pub fn use_spring_ref<V>(from: V, f: impl FnMut(V) + 'static) -> UseSpringRef<V>
 where
     V: Lerp<Scalar = f32> + Clone + 'static,
@@ -83,6 +87,7 @@ pub(crate) enum Message<V> {
     Queue(V, Duration),
 }
 
+/// Hook returned from [`use_spring_ref`]
 pub struct UseSpringRef<V: 'static> {
     channel: CopyValue<(
         async_channel::Sender<Message<V>>,

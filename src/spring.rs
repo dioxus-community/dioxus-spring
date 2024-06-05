@@ -4,6 +4,7 @@ use interpolation::Lerp;
 use js_sys::Date;
 use std::time::Duration;
 
+/// Create a stream of interpolated values from one value to another over a [`Duration`].
 pub fn spring<V>(from: V, to: V, duration: Duration) -> impl Stream<Item = V>
 where
     V: Lerp<Scalar = f32> + Clone + 'static,
