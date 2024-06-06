@@ -1,4 +1,4 @@
-use dioxus::hooks::use_effect;
+use dioxus::hooks::use_memo;
 use dioxus_signals::{Readable, Signal};
 use dioxus_use_mounted::UseMounted;
 
@@ -10,7 +10,7 @@ pub fn use_animated<V>(
 ) where
     V: Clone,
 {
-    use_effect(move || {
+    use_memo(move || {
         let value = value_ref.read();
         set_style(mounted, &make_style(value.clone()));
     });

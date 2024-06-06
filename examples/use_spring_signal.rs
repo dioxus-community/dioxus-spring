@@ -10,7 +10,7 @@ fn app() -> Element {
         value_spring.animate(1., Duration::from_secs(1));
     });
 
-    use_effect(move || {
+    use_memo(move || {
         log::info!("{}", value());
     });
 

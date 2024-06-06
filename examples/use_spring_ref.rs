@@ -13,7 +13,7 @@ fn app() -> Element {
         spring_ref.animate(1., Duration::from_secs(1));
     });
 
-    use_effect(move || {
+    use_memo(move || {
         log::info!("{}", signal());
     });
 

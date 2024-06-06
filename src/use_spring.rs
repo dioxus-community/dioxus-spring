@@ -1,5 +1,5 @@
 use crate::use_spring_signal;
-use dioxus::{hooks::use_reactive, prelude::use_effect};
+use dioxus::{hooks::use_reactive, prelude::use_memo};
 use dioxus_signals::Signal;
 use interpolation::Lerp;
 use std::time::Duration;
@@ -13,7 +13,7 @@ where
 {
     let (signal, spring_ref) = use_spring_signal(value.clone());
 
-    use_effect(use_reactive((&value,), move |(to,)| {
+    use_memo(use_reactive((&value,), move |(to,)| {
         spring_ref.animate(to, duration);
     }));
 
