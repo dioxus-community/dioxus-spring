@@ -1,6 +1,6 @@
 [![License](https://img.shields.io/badge/license-MIT%2FApache-blue.svg)](https://github.com/matthunz/dioxus-spring#license)
 [![Crates.io](https://img.shields.io/crates/v/dioxus-spring.svg)](https://crates.io/crates/dioxus-spring)
-[![Docs](https://docs.rs/dioxus-spring/badge.svg)](https://docs.rs/dioxus-spring/latest/dioxus-spring/)
+[![Docs](https://docs.rs/dioxus-spring/badge.svg)](https://docs.rs/dioxus-spring/latest/dioxus_spring/)
 [![CI](https://github.com/matthunz/dioxus-spring/workflows/CI/badge.svg)](https://github.com/matthunz/dioxus-spring/actions)
 
 Animation library for [Dioxus](https://dioxuslabs.com).
