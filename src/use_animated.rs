@@ -1,5 +1,4 @@
-use dioxus::hooks::use_memo;
-use dioxus_signals::{Readable, Signal};
+use dioxus::{hooks::use_memo, signals::{Readable, Signal}};
 use dioxus_use_mounted::UseMounted;
 
 /// Hook to use an animated value and apply it to a mounted element.
