@@ -1,7 +1,7 @@
 [package]
 name = "dioxus-spring"
 description = "Animation library for Dioxus"
-version = "0.3.0-alpha.2"
+version = "0.3.0-alpha.3"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 
@@ -15,8 +15,8 @@ log = "0.4.20"
 dioxus-logger = "0.4.1"
 wasm-bindgen = "0.2.87"
 web-sys = "0.3.64"
-dioxus-use-mounted = "0.3.0-alpha.1"
+dioxus-use-mounted = "0.3.0-alpha.3"
 slotmap = "1.0.6"
 
 [dev-dependencies]
-dioxus-resize-observer = "0.3.0-alpha.1"
+dioxus-resize-observer = "0.3.0-alpha.3"
