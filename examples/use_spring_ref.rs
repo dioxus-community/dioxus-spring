@@ -5,9 +5,7 @@ use std::time::Duration;
 
 fn app() -> Element {
     let mut signal = use_signal(|| 0.);
-    let spring_ref = use_spring_ref(0f32, move |x| {
-        signal.set(x)
-    });
+    let spring_ref = use_spring_ref(0f32, move |x| signal.set(x));
 
     use_hook(move || {
         spring_ref.animate(1., Duration::from_secs(1));

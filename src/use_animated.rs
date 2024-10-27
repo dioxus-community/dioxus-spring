@@ -1,4 +1,8 @@
-use dioxus::{hooks::use_memo, signals::{Readable, Signal}};
+use dioxus::{
+    hooks::use_memo,
+    signals::{Readable, Signal},
+    web::WebEventExt,
+};
 use dioxus_use_mounted::UseMounted;
 
 /// Hook to use an animated value and apply it to a mounted element.
@@ -17,7 +21,7 @@ pub fn use_animated<V>(
 
 fn set_style(mounted: UseMounted, style: &str) {
     if let Some(element) = &*mounted.signal.read() {
-        let raw_elem = element.downcast::<web_sys::Element>().unwrap();
+        let raw_elem = element.try_as_web_event().unwrap();
 
         raw_elem.set_attribute("style", style).unwrap();
     }

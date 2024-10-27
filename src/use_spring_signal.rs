@@ -10,9 +10,7 @@ where
     let from_clone = from.clone();
     let mut output = use_signal(move || from_clone);
 
-    let spring_ref = use_spring_ref(from, move |value| {
-        output.set(value)
-    });
+    let spring_ref = use_spring_ref(from, move |value| output.set(value));
 
     (output, spring_ref)
 }

@@ -2,17 +2,20 @@ use crate::spring;
 use dioxus::prelude::*;
 use futures::StreamExt;
 use interpolation::Lerp;
-use std::{collections::VecDeque, task::Poll, time::Duration};
+use std::{collections::VecDeque, pin::Pin, task::Poll, time::Duration};
 
 /// Hook to animate a value from some initial value `from`.
-/// 
+///
 /// The returned [`UseSpringRef`] can be used to queue and control animations.
 /// Values are linearly interpolated and sent to the handler `f`.
 pub fn use_spring_ref<V>(from: V, f: impl FnMut(V) + 'static) -> UseSpringRef<V>
 where
     V: Lerp<Scalar = f32> + Clone + 'static,
 {
-    let mut channel = use_hook(|| CopyValue::new(async_channel::unbounded()));
+    let mut channel = use_hook(|| {
+        let (tx, rx) = async_channel::unbounded();
+        CopyValue::new((tx, Box::pin(rx)))
+    });
     let mut f_cell = Some(f);
 
     use_future(move || {
@@ -91,7 +94,7 @@ pub(crate) enum Message<V> {
 pub struct UseSpringRef<V: 'static> {
     channel: CopyValue<(
         async_channel::Sender<Message<V>>,
-        async_channel::Receiver<Message<V>>,
+        Pin<Box<async_channel::Receiver<Message<V>>>>,
     )>,
 }
 
@@ -100,7 +103,7 @@ impl<V> UseSpringRef<V> {
         self.channel
             .read()
             .0
-            .send_blocking(Message::Set(to, None))
+            .force_send(Message::Set(to, None))
             .unwrap();
     }
 
@@ -108,7 +111,7 @@ impl<V> UseSpringRef<V> {
         self.channel
             .read()
             .0
-            .send_blocking(Message::Set(to, Some(duration)))
+            .force_send(Message::Set(to, Some(duration)))
             .unwrap();
     }
 
@@ -116,7 +119,7 @@ impl<V> UseSpringRef<V> {
         self.channel
             .read()
             .0
-            .send_blocking(Message::Queue(to, duration))
+            .force_send(Message::Queue(to, duration))
             .unwrap();
     }
 }
