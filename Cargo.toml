@@ -7,16 +7,27 @@ license = "MIT OR Apache-2.0"
 
 [dependencies]
 async-channel = "2.3.1"
-dioxus = { version = "0.6.0-alpha.3", features = ["web"] }
+dioxus = { version = "0.6.2", features = ["web"] }
 futures = "0.3.31"
 interpolation = "0.3.0"
-js-sys = "0.3.72"
-log = "0.4.22"
-dioxus-logger = "0.4.1"
+js-sys = "0.3.77"
+log = "0.4.25"
 wasm-bindgen = "0.2.95"
-web-sys = "0.3.72"
-dioxus-use-mounted = "0.3.0-alpha.4"
+web-sys = "0.3.77"
+dioxus-use-mounted = "0.3.0"
 slotmap = "1.0.7"
 
 [dev-dependencies]
-dioxus-resize-observer = "0.3.0-alpha.4"
+dioxus-resize-observer = "0.3.0"
+
+[profile]
+
+[profile.wasm-dev]
+inherits = "dev"
+opt-level = 1
+
+[profile.server-dev]
+inherits = "dev"
+
+[profile.android-dev]
+inherits = "dev"
