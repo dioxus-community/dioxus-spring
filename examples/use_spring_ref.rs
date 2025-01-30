@@ -1,6 +1,5 @@
-use dioxus::prelude::*;
+use dioxus::{logger::tracing::Level, prelude::*};
 use dioxus_spring::use_spring_ref;
-use log::LevelFilter;
 use std::time::Duration;
 
 fn app() -> Element {
@@ -19,7 +18,7 @@ fn app() -> Element {
 }
 
 fn main() {
-    dioxus_logger::init(LevelFilter::Info).expect("failed to init logger");
+    dioxus::logger::init(Level::INFO).expect("failed to init logger");
 
     dioxus::launch(app)
 }
